@@ -40,6 +40,18 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 27
+        versionCode VERSION_CODE.toInteger()
+        versionName VERSION_NAME
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            if (outputFileName.endsWith('-release.apk')) {
+                outputFileName = outputFileName.replace(outputFileName, "Camera2Photo" + "_" + variant.versionName + ".apk")
+            } else if (outputFileName.endsWith('-debug.apk')) {
+                outputFileName = outputFileName.replace(outputFileName, "Camera2Photo-debug" + "_" + variant.versionName + ".apk")
+            }
+        }
     }
 
     compileOptions {

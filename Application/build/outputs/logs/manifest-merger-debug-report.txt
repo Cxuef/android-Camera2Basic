@@ -1,6 +1,8 @@
 -- Merging decision tree log ---
 manifest
 ADDED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml:18:1-40:12
+INJECTED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml:18:1-40:12
+INJECTED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml:18:1-40:12
 MERGED from [com.android.support:support-v13:27.0.2] /home/eirot/.gradle/caches/transforms-1/files-1.1/support-v13-27.0.2.aar/0a25738893c424b91618cdd0c65fb55d/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-v4:27.0.2] /home/eirot/.gradle/caches/transforms-1/files-1.1/support-v4-27.0.2.aar/c263b0f133b2541064d6cf44142bfb85/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:cardview-v7:27.0.2] /home/eirot/.gradle/caches/transforms-1/files-1.1/cardview-v7-27.0.2.aar/fd5b95ed6bd9b980f2072da051d3414f/AndroidManifest.xml:17:1-22:12
@@ -13,8 +15,18 @@ MERGED from [com.android.support:support-core-ui:27.0.2] /home/eirot/.gradle/cac
 MERGED from [com.android.support:support-vector-drawable:27.0.2] /home/eirot/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-27.0.2.aar/fb53973f81ad2fe9dcd6b002e75bd3d8/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-compat:27.0.2] /home/eirot/.gradle/caches/transforms-1/files-1.1/support-compat-27.0.2.aar/7daae79bab7f40570da4ab4c72d08967/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:runtime:1.0.3] /home/eirot/.gradle/caches/transforms-1/files-1.1/runtime-1.0.3.aar/905426e658265d1b9b4fda32ec91b9b5/AndroidManifest.xml:17:1-24:12
+INJECTED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml:18:1-40:12
+INJECTED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml:18:1-40:12
 	package
 		ADDED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml:19:5-47
+	android:versionName
+		INJECTED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml
+		ADDED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml:18:1-40:12
+		INJECTED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml
+		ADDED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml:18:1-40:12
+		INJECTED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /home/eirot/study/Android/android-Camera2Basic/Application/src/main/AndroidManifest.xml:18:11-69
 uses-permission#android.permission.CAMERA
