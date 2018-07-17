@@ -16,5 +16,6 @@
 <resources>
     <style name="MaterialTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowFullscreen">true</item>
+        <item name="btn_photo">@drawable/btn_photo</item>
     </style>
 </resources>

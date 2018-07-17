@@ -1,4 +1,0 @@
-#Wed Jul 11 20:09:19 CST 2018
-base.0=/home/eirot/study/Android/android-Camera2Basic/Application/build/intermediates/transforms/dexMerger/release/0
-path.0=classes.dex
-renamed.0=classes.dex
