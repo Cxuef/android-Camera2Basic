@@ -59,6 +59,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.android.camera2basic.ui.AutoFitTextureView;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -910,8 +912,8 @@ public class Camera2BasicFragment extends Fragment
         switch (view.getId()) {
             case R.id.picture: {
                 mFile = new File(getActivity().getExternalFilesDir(null), "Camera2Photo_" + System.currentTimeMillis() + ".jpg");
-//                takePicture();
-                testTakePictureZsl();
+                takePicture();
+//                testTakePictureZsl();
                 break;
             }
         }

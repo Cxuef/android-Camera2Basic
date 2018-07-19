@@ -17,7 +17,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.android.camera2basic.AutoFitTextureView
+    <com.example.android.camera2basic.ui.AutoFitTextureView
         android:id="@+id/texture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         android:layout_alignParentStart="true"
         android:background="@color/safe_mode_background" >
 
-        <com.example.android.camera2basic.ShutterButton
+        <com.example.android.camera2basic.ui.ShutterButton
             android:id="@+id/picture"
             android:layout_width="64in"
             android:layout_height="64dp"

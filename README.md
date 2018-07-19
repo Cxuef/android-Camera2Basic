@@ -8,7 +8,8 @@ pictures.
 
 How to use
 ------------
-You need to checkout eirot branch to see changes what i add.
+You need to checkout eirot branch to see changes what i add. 
+Additionally, I use google pixel 2 to run this demo. Others smartphone maybe not work fun
 
 
 Introduction
