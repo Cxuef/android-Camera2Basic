@@ -226,7 +226,7 @@ public class RotateImageView extends TwoStateImageView implements Rotatable {
 
     public void setImageViewPressBg(boolean flag, int pressedDrawableId) {
         mNeedUpdatePressedBg = flag;
-        pressedBgDrawable = getResources().getDrawable(pressedDrawableId);
+        pressedBgDrawable = getResources().getDrawable(pressedDrawableId, null);
     }
 
     protected void updateStateAfterAnimation() {
