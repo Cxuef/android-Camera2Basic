@@ -60,6 +60,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.android.camera2basic.ui.AutoFitTextureView;
+import com.example.android.camera2basic.ui.ShutterButton;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -74,7 +75,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 public class Camera2BasicFragment extends Fragment
-        implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+        implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     /**
      * Conversion from screen rotation to JPEG orientation.
@@ -169,6 +170,9 @@ public class Camera2BasicFragment extends Fragment
      * An {@link AutoFitTextureView} for camera preview.
      */
     private AutoFitTextureView mTextureView;
+
+
+    private ShutterButton mPhotoShutterButton;
 
     /**
      * A {@link CameraCaptureSession } for camera preview.
@@ -363,12 +367,7 @@ public class Camera2BasicFragment extends Fragment
     private void showToast(final String text) {
         final Activity activity = getActivity();
         if (activity != null) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
-                }
-            });
+            activity.runOnUiThread(() -> Toast.makeText(activity, text, Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -433,8 +432,13 @@ public class Camera2BasicFragment extends Fragment
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        view.findViewById(R.id.picture).setOnClickListener(this);
-        mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
+        mPhotoShutterButton = view.findViewById(R.id.picture);
+        mTextureView = view.findViewById(R.id.texture);
+        
+        mPhotoShutterButton.setOnShutterButtonListener(mPhotoListener);
+        if(mPhotoShutterButton != null) {
+            mPhotoShutterButton.setOnShutterButtonListener(mPhotoListener);
+        }
     }
 
     @Override
@@ -907,18 +911,6 @@ public class Camera2BasicFragment extends Fragment
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.picture: {
-                mFile = new File(getActivity().getExternalFilesDir(null), "Camera2Photo_" + System.currentTimeMillis() + ".jpg");
-                takePicture();
-//                testTakePictureZsl();
-                break;
-            }
-        }
-    }
-
     private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
         if (mFlashSupported) {
             requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
@@ -1006,12 +998,7 @@ public class Camera2BasicFragment extends Fragment
             final Activity activity = getActivity();
             return new AlertDialog.Builder(activity)
                     .setMessage(getArguments().getString(ARG_MESSAGE))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            activity.finish();
-                        }
-                    })
+                    .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> activity.finish())
                     .create();
         }
 
@@ -1028,25 +1015,39 @@ public class Camera2BasicFragment extends Fragment
             final Fragment parent = getParentFragment();
             return new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.request_permission)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            parent.requestPermissions(new String[]{Manifest.permission.CAMERA},
-                                    REQUEST_CAMERA_PERMISSION);
-                        }
-                    })
+                    .setPositiveButton(android.R.string.ok,
+                            (dialog, which) -> parent.requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION))
                     .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Activity activity = parent.getActivity();
-                                    if (activity != null) {
-                                        activity.finish();
-                                    }
+                            (dialog, which) -> {
+                                Activity activity = parent.getActivity();
+                                if (activity != null) {
+                                    activity.finish();
                                 }
                             })
                     .create();
         }
     }
+
+
+    private ShutterButton.OnShutterButtonListener mPhotoListener = new ShutterButton.OnShutterButtonListener() {
+
+        @Override
+        public void onShutterButtonFocus(ShutterButton button, boolean pressed) {
+
+        }
+
+        @Override
+        public void onShutterButtonClick(ShutterButton button) {
+            mFile = new File(getActivity().getExternalFilesDir(null), "Camera2Photo_" + System.currentTimeMillis() + ".jpg");
+            Log.d(TAG, "--->>>onShutterButtonClick: ");
+            takePicture();
+            //testTakePictureZsl();
+        }
+
+        @Override
+        public void onShutterButtonLongPressed(ShutterButton button) {
+            Log.d(TAG, "onShutterButtonLongPressed: ");
+        }
+    };
 
 }

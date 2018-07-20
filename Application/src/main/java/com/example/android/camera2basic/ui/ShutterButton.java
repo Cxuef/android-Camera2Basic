@@ -71,33 +71,7 @@ public class ShutterButton extends RotateImageView implements View.OnLongClickLi
         Log.i(TAG, "drawableStateChanged() pressed = " + pressed);
         if (pressed != mOldPressed) {
             if (!pressed) {
-                // When pressing the physical camera button the sequence of
-                // events is:
-                //    focus pressed, optional camera pressed, focus released.
-                // We want to emulate this sequence of events with the shutter
-                // button. When clicking using a trackball button, the view
-                // system changes the drawable state before posting click
-                // notification, so the sequence of events is:
-                //    pressed(true), optional click, pressed(false)
-                // When clicking using touch events, the view system changes the
-                // drawable state after posting click notification, so the
-                // sequence of events is:
-                //    pressed(true), pressed(false), optional click
-                // Since we're emulating the physical camera button, we want to
-                // have the same order of events. So we want the optional click
-                // callback to be delivered before the pressed(false) callback.
-                //
-                // To do this, we delay the posting of the pressed(false) event
-                // slightly by pushing it on the event queue. This moves it
-                // after the optional click notification, so our client always
-                // sees events in this sequence:
-                //     pressed(true), optional click, pressed(false)
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callShutterButtonFocus(pressed);
-                    }
-                });
+                post(() -> callShutterButtonFocus(pressed));
             } else {
                 callShutterButtonFocus(pressed);
             }
@@ -117,17 +91,16 @@ public class ShutterButton extends RotateImageView implements View.OnLongClickLi
             return false;
         }
         boolean result = super.performClick();
-        if (mListener != null/* && isEnabled() && isClickable()*/) {
+        if (mListener != null) {
             mListener.onShutterButtonClick(this);
         }
         return result;
     }
 
     public boolean onLongClick(View v) {
-        if (mListener != null /*&& isEnabled() && isClickable()*/) {
+        if (mListener != null) {
             mListener.onShutterButtonLongPressed(this);
-            //if(FeatureSwitcher.isQCOM())
-            return true;//songyutao add
+            return true;
         }
         return false;
     }
