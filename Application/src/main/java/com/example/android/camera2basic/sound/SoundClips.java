@@ -76,8 +76,8 @@ public class SoundClips {
             mSoundIDToPlay = ID_NOT_LOADED;
 
             AudioAttributes attributes = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_GAME)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .build();
             mSoundPool = new SoundPool.Builder()
                     .setAudioAttributes(attributes)
