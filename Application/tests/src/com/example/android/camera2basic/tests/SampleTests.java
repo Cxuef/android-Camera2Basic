@@ -18,6 +18,7 @@ package com.example.android.camera2basic.tests;
 import com.example.android.camera2basic.*;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
 /**
 * Tests for Camera2Basic sample.
@@ -25,6 +26,7 @@ import android.test.ActivityInstrumentationTestCase2;
 public class SampleTests extends ActivityInstrumentationTestCase2<CameraActivity> {
 
     private CameraActivity mTestActivity;
+    private final static String TAG = "SampleTests";
 
     public SampleTests() {
         super(CameraActivity.class);
@@ -48,10 +50,15 @@ public class SampleTests extends ActivityInstrumentationTestCase2<CameraActivity
         //Try to add a message to add context to your assertions. These messages will be shown if
         //a tests fails and make it easy to understand why a test failed
         assertNotNull("mTestActivity is null", mTestActivity);
+
+        Log.d(TAG, "---->>> testPreconditions: OK");
     }
 
-    /**
-    * Add more tests below.
-    */
+    public void testFactotyMode() {
+        String title = "/storage/emulated/0/DCIM/Camera/Slow20190418214211.mp4";
+        String newTitle = title.split("/")[6];
+
+        Log.d(TAG, "---->>> testFactotyMode: OK! newTitle: " + newTitle);
+    }
 
 }

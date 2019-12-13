@@ -39,9 +39,11 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.hardware.fingerprint.FingerprintManager;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -66,6 +68,7 @@ import com.example.android.camera2basic.ui.ShutterButton;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,7 +105,7 @@ public class Camera2BasicFragment extends Fragment
     private ShutterButton mPhotoShutterButton;
     private CameraCaptureSession mCaptureSession;
     private CameraDevice mCameraDevice;
-    private String mCameraId;
+    private String mCameraId = "0";
     private Size mPreviewSize;
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
@@ -315,6 +318,7 @@ public class Camera2BasicFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_camera2_basic, container, false);
     }
 
@@ -390,7 +394,11 @@ public class Camera2BasicFragment extends Fragment
     private void setUpCameraOutputs(int width, int height) {
         Activity activity = getActivity();
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+        FingerprintManager managerF = (FingerprintManager) activity.getSystemService(Context.FINGERPRINT_SERVICE);
+        Log.d(TAG, "setUpCameraOutputs: manager = " + manager);
         try {
+            int cameraIdCount = manager.getCameraIdList().length;
+            Log.e(TAG, "setUpCameraOutputs: cameraIdCount = " + cameraIdCount);
             for (String cameraId : manager.getCameraIdList()) {
                 CameraCharacteristics characteristics
                         = manager.getCameraCharacteristics(cameraId);
@@ -400,6 +408,8 @@ public class Camera2BasicFragment extends Fragment
                 if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
                     continue;
                 }
+
+                Log.e(TAG, "--------------setUpCameraOutputs: cameraId = " + cameraId);
 
                 StreamConfigurationMap map = characteristics.get(
                         CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
@@ -411,6 +421,7 @@ public class Camera2BasicFragment extends Fragment
                 Size largest = Collections.max(
                         Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)),
                         new CompareSizesByArea());
+                Log.d(TAG, "setUpCameraOutputs: largestRAW10 = " + largest.getWidth() + "x" + largest.getHeight());
                 mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
                         ImageFormat.JPEG, MAX_READER_IMAGES);
                 mImageReader.setOnImageAvailableListener(
@@ -514,10 +525,13 @@ public class Camera2BasicFragment extends Fragment
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
             manager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
+
+            Log.e(TAG, "---->>>> openCamera: getCameraIdList: " + manager.getCameraIdList().length);
         } catch (CameraAccessException e) {
+            Log.e(TAG, "---->>>> openCamera: fail CameraAccessException");
             e.printStackTrace();
         } catch (InterruptedException e) {
-            throw new RuntimeException("Interrupted while trying to lock camera opening.", e);
+            throw new RuntimeException("mCameraIdInterrupted while trying to lock camera opening.", e);
         }
     }
 
@@ -592,9 +606,7 @@ public class Camera2BasicFragment extends Fragment
 
             // We set up a CaptureRequest.Builder with the output Surface.
             mPreviewRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-            mZSLRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_ZERO_SHUTTER_LAG);
             mPreviewRequestBuilder.addTarget(mPreviewSurface);
-            mZSLRequestBuilder.addTarget(mPreviewSurface);
 
             // Here, we create a CameraCaptureSession for camera preview.
             mCameraDevice.createCaptureSession(Arrays.asList(mPreviewSurface, mImageReader.getSurface()),
@@ -617,10 +629,9 @@ public class Camera2BasicFragment extends Fragment
 
                                 // Finally, we start displaying the camera preview.
                                 mPreviewRequest = mPreviewRequestBuilder.build();
-                                mZSLRequest = mZSLRequestBuilder.build();
 
                                 // we need zsl take picture , so use mZSLRequest
-                                mCaptureSession.setRepeatingRequest(mZSLRequest,
+                                mCaptureSession.setRepeatingRequest(mPreviewRequest,
                                         mCaptureCallback, mBackgroundHandler);
                             } catch (CameraAccessException e) {
                                 e.printStackTrace();
@@ -691,6 +702,7 @@ public class Camera2BasicFragment extends Fragment
             stillRequestBuilder.addTarget(mImageReader.getSurface());
             mCaptureSession.capture(stillRequestBuilder.build(), mCaptureCallback, mBackgroundHandler);
             Log.d(TAG, "--->>>>testTakePictureZsl: now");
+            long mPss = Debug.getPss();
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -912,6 +924,7 @@ public class Camera2BasicFragment extends Fragment
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Fragment parent = getParentFragment();
+
             return new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.request_permission)
                     .setPositiveButton(android.R.string.ok,
@@ -937,8 +950,9 @@ public class Camera2BasicFragment extends Fragment
 
         @Override
         public void onShutterButtonClick(ShutterButton button) {
-            mFile = new File(getActivity().getExternalFilesDir(null), "Camera2Photo_" + System.currentTimeMillis() + ".jpg");
+            mFile = new File(getActivity().getExternalFilesDir(null), "C2P_" + System.currentTimeMillis() + ".jpg");
             Log.d(TAG, "--->>>onShutterButtonClick: ");
+
             takePicture();
             //testTakePictureZsl();
         }
@@ -948,5 +962,4 @@ public class Camera2BasicFragment extends Fragment
             Log.d(TAG, "onShutterButtonLongPressed: ");
         }
     };
-
 }
